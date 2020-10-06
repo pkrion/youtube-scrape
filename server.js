@@ -2,10 +2,18 @@ const express = require('express');
 const scraper = require('./scraper')
 const app = express();
     
-var cors = require('cors')
 
-var app = express()
-app.use(cors())
+var cors = require('cors');
+var bodyParser = require('body-parser');
+
+//enables cors
+app.use(cors({
+  'allowedHeaders': ['sessionId', 'Content-Type'],
+  'exposedHeaders': ['sessionId'],
+  'origin': '*',
+  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  'preflightContinue': false
+}));
 
 
 //Home page
@@ -16,7 +24,7 @@ app.get('/', (req, res) => {
 
 //API route
 app.get('/api/search', (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    
     scraper.youtube(req.query.q, req.query.page)
         .then(x => res.json(x))
         .catch(e => res.send(e));
