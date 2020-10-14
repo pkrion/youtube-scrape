@@ -184,7 +184,7 @@ function parseVideoRenderer(renderer) {
         "title": renderer.title.runs.reduce(comb, ""),
         "url": `https://www.youtube.com${renderer.navigationEndpoint.commandMetadata.webCommandMetadata.url}`,
         "duration": renderer.lengthText ? renderer.lengthText.simpleText : "Live",
-        "browseEndpoint":renderer.browseId ?
+        "browseEndpoint":renderer.browseId ? renderer.browseEndpoint.browseId,
         
         "snippet": renderer.descriptionSnippet ?
                    renderer.descriptionSnippet.runs.reduce((a, b) => a + (b.bold ? `<b>${b.text}</b>` : b.text), ""):
