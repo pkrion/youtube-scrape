@@ -4,7 +4,7 @@ const request = require('request');
 async function youtube(query, page) {
     return new Promise((resolve, reject) => {
         // Specify YouTube search url
-        let url1 = `https://www.youtube.com/results?q=${encodeURIComponent(query)}${page ? `&page=1` : ''}`;
+        let url1 = `https://www.youtube.com/results?q=${encodeURIComponent(query)}${`&page=1`}`;
 
         // Access YouTube search
         request(url1, (error, response, html) => {
