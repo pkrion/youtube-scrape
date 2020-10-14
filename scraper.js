@@ -198,7 +198,8 @@ function parseVideoRenderer(renderer) {
 
     let uploader = {
         "username": renderer.ownerText.runs[0].text,
-        "url": `https://www.youtube.com${renderer.ownerText.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url}`
+        "url": `https://www.youtube.com${renderer.ownerText.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url}`,
+        "channelid":renderer.ownerText.runs[0].navigationEndpoint.browseEndpoint.browseId
     };
     uploader.verified = renderer.ownerBadges &&
         renderer.ownerBadges.some(badge => badge.metadataBadgeRenderer.style.indexOf("VERIFIED") > -1) || 
