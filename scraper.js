@@ -4,10 +4,10 @@ const request = require('request');
 async function youtube(query, page) {
     return new Promise((resolve, reject) => {
         // Specify YouTube search url
-        let url = `https://www.youtube.com/results?q=${encodeURIComponent(query)}${page ? `&page=${page}` : ''}`;
+        let url1 = `https://www.youtube.com/results?q=${encodeURIComponent(query)}${page ? `&page=1` : ''}`;
 
         // Access YouTube search
-        request(url, (error, response, html) => {
+        request(url1, (error, response, html) => {
             // Check for errors
             if (!error && response.statusCode === 200) {
                 const $ = cheerio.load(html);
@@ -71,6 +71,145 @@ async function youtube(query, page) {
             }
             resolve({ error: error });
         });
+		 let url2 = `https://www.youtube.com/results?q=${encodeURIComponent(query)}${page ? `&page=2` : ''}`;
+		
+		 request1(url2, (error, response, html) => {
+            // Check for errors
+            if (!error && response.statusCode === 200) {
+                const $ = cheerio.load(html);
+                let json = { results: [], version: require('./package.json').version };
+
+                // First attempt to parse old youtube search result style
+                $(".yt-lockup-dismissable").each((index, vid) => {
+                    json["parser"] = "html_format";
+                    json.results.push(parseOldFormat($, vid));
+                });
+
+                // If that fails, we have to parse new format from json data in html script tag
+                if (!json.results.length) {
+                    json["parser"] = "json_format";
+
+                    // Get script json data from html to parse
+                    let data, sectionLists = [];
+                    try {
+                        data = html.substring(html.indexOf("ytInitialData") + 17);
+                        data = JSON.parse(data.substring(0, data.indexOf('window["ytInitialPlayerResponse"]') - 6));
+                        json["estimatedResults"] = data.estimatedResults || "0";
+                        sectionLists = data.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents;
+                    }
+                    catch(ex) {
+                        console.error("Failed to parse data:", ex);
+                        console.log(data);
+                    }
+
+                    // Loop through all objects and parse data according to type
+                    sectionLists.filter(x => x.hasOwnProperty("itemSectionRenderer")).forEach(sectionList => {
+                        try {
+                            sectionList.itemSectionRenderer.contents.forEach(content => {
+                                try {
+                                    if (content.hasOwnProperty("channelRenderer")) {
+                                        json.results.push(parseChannelRenderer(content.channelRenderer));
+                                    }
+                                    if (content.hasOwnProperty("videoRenderer")) {
+                                        
+                                    }
+                                    if (content.hasOwnProperty("radioRenderer")) {
+                                        
+                                    }
+                                    if (content.hasOwnProperty("playlistRenderer")) {
+                                        
+                                    }
+                                }
+                                catch(ex) {
+                                    console.error("Failed to parse renderer:", ex);
+                                    console.log(content);
+                                }
+                            });
+                        }
+                        catch (ex) {
+                            console.error("Failed to read contents for section list:", ex);
+                            console.log(sectionList);
+                        }
+                    });
+                }
+    
+                return resolve(json);
+            }
+            resolve({ error: error });
+        });
+		
+		 let url3 = `https://www.youtube.com/results?q=${encodeURIComponent(query)}${page ? `&page=3` : ''}`;
+		 request(url3, (error, response, html) => {
+            // Check for errors
+            if (!error && response.statusCode === 200) {
+                const $ = cheerio.load(html);
+                let json = { results: [], version: require('./package.json').version };
+
+                // First attempt to parse old youtube search result style
+                $(".yt-lockup-dismissable").each((index, vid) => {
+                    json["parser"] = "html_format";
+                    json.results.push(parseOldFormat($, vid));
+                });
+
+                // If that fails, we have to parse new format from json data in html script tag
+                if (!json.results.length) {
+                    json["parser"] = "json_format";
+
+                    // Get script json data from html to parse
+                    let data, sectionLists = [];
+                    try {
+                        data = html.substring(html.indexOf("ytInitialData") + 17);
+                        data = JSON.parse(data.substring(0, data.indexOf('window["ytInitialPlayerResponse"]') - 6));
+                        json["estimatedResults"] = data.estimatedResults || "0";
+                        sectionLists = data.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents;
+                    }
+                    catch(ex) {
+                        console.error("Failed to parse data:", ex);
+                        console.log(data);
+                    }
+
+                    // Loop through all objects and parse data according to type
+                    sectionLists.filter(x => x.hasOwnProperty("itemSectionRenderer")).forEach(sectionList => {
+                        try {
+                            sectionList.itemSectionRenderer.contents.forEach(content => {
+                                try {
+                                    if (content.hasOwnProperty("channelRenderer")) {
+                                        json.results.push(parseChannelRenderer(content.channelRenderer));
+                                    }
+                                    if (content.hasOwnProperty("videoRenderer")) {
+                                        
+                                    }
+                                    if (content.hasOwnProperty("radioRenderer")) {
+                                        
+                                    }
+                                    if (content.hasOwnProperty("playlistRenderer")) {
+                                        
+                                    }
+                                }
+                                catch(ex) {
+                                    console.error("Failed to parse renderer:", ex);
+                                    console.log(content);
+                                }
+                            });
+                        }
+                        catch (ex) {
+                            console.error("Failed to read contents for section list:", ex);
+                            console.log(sectionList);
+                        }
+                    });
+                }
+    
+                return resolve(json);
+            }
+            resolve({ error: error });
+        });
+		
+		
+		
+		
+		
+		
+		
     });
 }
 
