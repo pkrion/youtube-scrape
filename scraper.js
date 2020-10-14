@@ -45,13 +45,13 @@ async function youtube(query, page) {
                                         json.results.push(parseChannelRenderer(content.channelRenderer));
                                     }
                                     if (content.hasOwnProperty("videoRenderer")) {
-                                        json.results.push(parseVideoRenderer(content.videoRenderer));
+                                        
                                     }
                                     if (content.hasOwnProperty("radioRenderer")) {
-                                        json.results.push(parseRadioRenderer(content.radioRenderer));
+                                        
                                     }
                                     if (content.hasOwnProperty("playlistRenderer")) {
-                                        json.results.push(parsePlaylistRenderer(content.playlistRenderer));
+                                        
                                     }
                                 }
                                 catch(ex) {
